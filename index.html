@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+  body {
+    background-color: black;
+  }
+
+  .navbar-brand {
+    color: red;
+    font-weight: bolder;
+    font-size: 25px;
+  }
+
+  .form-control {
+    background-color: lightslategrey;
+    text-align: center;
+    color: white;
+  }
+
+  .nav-item a {
+    color: black;
+    font-weight: bold;
+  }
+
+  .card-body {
+    background-color: gold;
+  }
+
+  .dropdown-menu .dropdown-item:hover {
+    background-color: orange;
+  }
+
+  .nav-item .nav-link:hover {
+    background-color: orange;
+    border-radius: 20px;
+  }
+
+  .btn {
+    font-weight: bold;
+  }
+
+  .btn:hover {
+    background-color: orange;
+    color: black;
+    font-weight: bold;
+  }
+</style>
+
+<body>
+  <div class="container mt-2">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid bg-info-subtle">
+        <a class="navbar-brand" href="#">News Junction</a>
+        <button class="navbar-toggler bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+          aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+          <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" id="spaceLink">Science</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" id="spaceLink">Technology</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" id="spaceLink">General</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" id="spaceLink">Entertainment</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" id="spaceLink">Sports</a>
+            </li>
+            <li class="nav-item">
+              <!-- Example single danger button -->
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Language
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a id="dropdown" class="dropdown-item" href="#">Hindi</a></li>
+                  <li><a id="dropdown" class="dropdown-item" href="#">English</a></li>
+
+                </ul>
+              </div>
+            </li>
+
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" id="inpt" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-success" id="btn" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row d-flex justify-content-center" id="cont"></div>
+
+    <button type="button" class="btn btn-primary mt-3" id="prev">Previous Page</button>
+    <button type="button" class="btn btn-primary float-end mt-3" id="next">Next Page</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+    crossorigin="anonymous"></script>
+</body>
+<script>
+  let page = 1;
+  let query = "health";
+  let cont = document.getElementById('cont');
+  let str = " ";
+  let lang = "en";
+  let btn = document.getElementById('btn');
+  let prev = document.getElementById('prev');
+  let next = document.getElementById('next');
+  let inp = document.getElementById('inpt');
+  let dropdown = document.querySelectorAll("#dropdown");
+
+  async function getNews(query, page, lang) {
+    var url = 'https://newsapi.org/v2/everything?' +
+      'q=' + query +
+      '&from=2023-04-01&' +
+      'pageSize=20&' +
+      'page=' + page +
+      '&sortBy=popularity&' +
+      'language=' + lang +
+      '&apiKey=f9d9750a9c2d4d1cbb808c8f41431f75';
+
+    var req = new Request(url);
+
+    let a = await fetch(req);
+    //console.log(a) se jo data mila hai wo readable nahi hai issliy usko json me convert karo
+    let response = await a.json();
+    console.log(response);
+    for (let items of response.articles) {
+      str += `<div class="card my-3 mx-3 px-1 py-2" style="width: 18rem;">
+                    <img src="${items.urlToImage}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                    <h5 class="card-title">${items.title}</h5>
+                    <p class="card-text">${items.description}</p>
+                    <a href="${items.url}"  target="_blank" class="btn btn-primary d-flex justify-content-center">Read More</a>
+                    </div>
+                    </div>`
+    }
+    cont.innerHTML = str;
+  }
+  getNews(query, page, lang);
+
+
+  btn.addEventListener('click', (e) => {
+    str = " ";
+    e.preventDefault();
+    query = inp.value;
+    getNews(query, page, lang);
+  })
+
+  prev.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (page > 1) {
+      page -= 1;
+      getNews(query, page, lang);
+    }
+  })
+
+  next.addEventListener('click', (e) => {
+    e.preventDefault();
+    page += 1;
+    getNews(query, page, lang);
+  })
+
+  let add = document.querySelectorAll('#spaceLink');
+  add.forEach((item) => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      query = e.target.innerHTML;
+      str = " ";
+      getNews(query, page, lang);
+    });
+  })
+
+  dropdown.forEach((ele) => {
+    ele.addEventListener('click', () => {
+      if (ele.innerHTML == "Hindi") {
+        lang = "hi";
+        str = " ";
+        getNews(query, page, lang);
+      }
+      else {
+        lang = "en";
+        str = " ";
+        getNews(query, page, lang);
+      }
+    })
+  })
+</script>
+
+</html>
